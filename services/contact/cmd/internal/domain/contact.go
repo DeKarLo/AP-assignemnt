@@ -6,11 +6,11 @@ import (
 )
 
 type Contact struct {
-	id          int
-	firstName   string
-	middleName  string
-	lastName    string
-	phoneNumber int
+	ID          int
+	FirstName   string
+	MiddleName  string
+	LastName    string
+	PhoneNumber int
 }
 
 func NewContact(id int, firstName string, middleName string, lastName string, phoneNumber int) (*Contact, error) {
@@ -19,18 +19,18 @@ func NewContact(id int, firstName string, middleName string, lastName string, ph
 	}
 
 	contact := &Contact{
-		id:          id,
-		firstName:   firstName,
-		middleName:  middleName,
-		lastName:    lastName,
-		phoneNumber: phoneNumber,
+		ID:          id,
+		FirstName:   firstName,
+		MiddleName:  middleName,
+		LastName:    lastName,
+		PhoneNumber: phoneNumber,
 	}
 
 	return contact, nil
 }
 
 func (c *Contact) FullName() string {
-	return c.firstName + " " + c.middleName + " " + c.lastName
+	return c.FirstName + " " + c.MiddleName + " " + c.LastName
 }
 
 func isPhoneNumberValid(phoneNumber int) bool {
