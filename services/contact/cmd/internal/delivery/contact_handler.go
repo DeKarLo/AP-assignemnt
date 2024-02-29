@@ -5,6 +5,7 @@ import (
 	"architecture_go/services/contact/cmd/internal/usecase"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -57,6 +58,7 @@ func (h *ContactHandler) CreateContact(w http.ResponseWriter, r *http.Request) {
 	err = h.usecase.CreateContact(ctx, firstName, middleName, lastName, phoneNumber)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Fatal(err)
 		return
 	}
 
@@ -71,12 +73,14 @@ func (h *ContactHandler) GetContact(w http.ResponseWriter, r *http.Request) {
 	contactID, err := strconv.Atoi(contactIDStr)
 	if err != nil {
 		http.Error(w, "invalid contact ID", http.StatusBadRequest)
+		log.Fatal(err)
 		return
 	}
 
 	contact, err := h.usecase.GetContactByID(ctx, contactID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
+		log.Fatal(err)
 		return
 	}
 
@@ -91,6 +95,7 @@ func (h *ContactHandler) UpdateContact(w http.ResponseWriter, r *http.Request) {
 	contactID, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "invalid contact ID", http.StatusBadRequest)
+		log.Fatal(err)
 		return
 	}
 
@@ -122,12 +127,14 @@ func (h *ContactHandler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 	contactID, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "invalid contact ID", http.StatusBadRequest)
+		log.Fatal(err)
 		return
 	}
 
 	err = h.usecase.DeleteContact(ctx, contactID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Fatal(err)
 		return
 	}
 

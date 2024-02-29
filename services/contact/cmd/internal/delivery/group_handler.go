@@ -5,6 +5,7 @@ import (
 	"architecture_go/services/contact/cmd/internal/usecase"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -43,6 +44,7 @@ func (h *GroupHandler) CreateGroup(w http.ResponseWriter, r *http.Request) {
 	err := h.usecase.CreateGroup(ctx, name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Fatal(err)
 		return
 	}
 
@@ -57,12 +59,14 @@ func (h *GroupHandler) GetGroup(w http.ResponseWriter, r *http.Request) {
 	groupID, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "invalid group ID", http.StatusBadRequest)
+		log.Fatal(err)
 		return
 	}
 
 	group, err := h.usecase.GetGroupByID(ctx, groupID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Fatal(err)
 		return
 	}
 
@@ -77,6 +81,7 @@ func (h *GroupHandler) AddContactToGroup(w http.ResponseWriter, r *http.Request)
 	contactID, err := strconv.Atoi(contactIDStr)
 	if err != nil {
 		http.Error(w, "invalid contact ID", http.StatusBadRequest)
+		log.Fatal(err)
 		return
 	}
 
@@ -84,12 +89,14 @@ func (h *GroupHandler) AddContactToGroup(w http.ResponseWriter, r *http.Request)
 	groupID, err := strconv.Atoi(groupIDStr)
 	if err != nil {
 		http.Error(w, "invalid group ID", http.StatusBadRequest)
+		log.Fatal(err)
 		return
 	}
 
 	err = h.usecase.AddContactToGroup(ctx, contactID, groupID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Fatal(err)
 		return
 	}
 
