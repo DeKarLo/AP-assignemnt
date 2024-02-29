@@ -11,23 +11,25 @@ import (
 )
 
 func main() {
+	// Connect to the database
 	db, err := postgres.ConnectDB("localhost", "5432", "postgres", "dek@123455", "contact")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error connecting to the database:", err)
 		return
 	}
-	fmt.Println("Connected to the database")
 	defer db.Close(context.Background())
 
-	contactRepo := repository.NewContactRepository()
-	groupRepo := repository.NewGroupRepository()
+	contactRepo := repository.NewContactRepository(db)
+	groupRepo := repository.NewGroupRepository(db)
+
 	contactUsecase := usecase.NewContactUsecase(contactRepo, groupRepo)
-	contactHandler := delivery.NewContactHandler(contactUsecase)
+
+	contactHandler := delivery.NewContactHandler(*contactUsecase)
 
 	http.HandleFunc("/contacts", contactHandler.HandleContacts)
 
-	fmt.Println("Сервер запущен на порту :8080")
+	fmt.Println("Server is running on port :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
-		fmt.Printf("Ошибка при запуске сервера: %s\n", err)
+		fmt.Printf("Error starting server: %s\n", err)
 	}
 }
