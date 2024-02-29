@@ -25,8 +25,10 @@ func main() {
 	contactUsecase := usecase.NewContactUsecase(contactRepo, groupRepo)
 
 	contactHandler := delivery.NewContactHandler(*contactUsecase)
+	groupHandler := delivery.NewGroupHandler(*contactUsecase)
 
 	http.HandleFunc("/contacts", contactHandler.HandleContacts)
+	http.HandleFunc("/groups", groupHandler.HandleGroups)
 
 	fmt.Println("Server is running on port :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

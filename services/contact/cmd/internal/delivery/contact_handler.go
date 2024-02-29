@@ -22,28 +22,26 @@ func NewContactHandler(usecase usecase.ContactUsecase) *ContactHandler {
 }
 
 func (h *ContactHandler) HandleContacts(w http.ResponseWriter, r *http.Request) {
+	id := uuid.New().String()
+	ctx := context.WithValue(context.Background(), "ID", id)
+
 	switch r.Method {
 	case http.MethodGet:
-		h.GetContact(w, r)
+		h.GetContact(w, r.WithContext(ctx))
 	case http.MethodPost:
-		h.CreateContact(w, r)
+		h.CreateContact(w, r.WithContext(ctx))
 	case http.MethodPut:
-		h.UpdateContact(w, r)
+		h.UpdateContact(w, r.WithContext(ctx))
 	case http.MethodDelete:
-		h.DeleteContact(w, r)
+		h.DeleteContact(w, r.WithContext(ctx))
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 func (h *ContactHandler) CreateContact(w http.ResponseWriter, r *http.Request) {
-	type contextKey string
-
-	const (
-		contextKeyID contextKey = "ID"
-	)
-
-	ctx := context.WithValue(r.Context(), contextKeyID, uuid.New().String())
+	id := uuid.New().String()
+	ctx := context.WithValue(context.Background(), "ID", id)
 
 	firstName := r.FormValue("firstName")
 	middleName := r.FormValue("middleName")
@@ -66,18 +64,11 @@ func (h *ContactHandler) CreateContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ContactHandler) GetContact(w http.ResponseWriter, r *http.Request) {
-	type contextKey string
+	id := uuid.New().String()
+	ctx := context.WithValue(context.Background(), "ID", id)
 
-	const (
-		contextKeyID contextKey = "ID"
-	)
-
-	id := r.Context().Value(contextKeyID).(string)
-
-	ctx := context.WithValue(r.Context(), contextKeyID, id)
-
-	idStr := r.FormValue("id")
-	contactID, err := strconv.Atoi(idStr)
+	contactIDStr := r.FormValue("id")
+	contactID, err := strconv.Atoi(contactIDStr)
 	if err != nil {
 		http.Error(w, "invalid contact ID", http.StatusBadRequest)
 		return
@@ -93,15 +84,8 @@ func (h *ContactHandler) GetContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ContactHandler) UpdateContact(w http.ResponseWriter, r *http.Request) {
-	type contextKey string
-
-	const (
-		contextKeyID contextKey = "ID"
-	)
-
-	id := r.Context().Value(contextKeyID).(string)
-
-	ctx := context.WithValue(r.Context(), contextKeyID, id)
+	id := uuid.New().String()
+	ctx := context.WithValue(context.Background(), "ID", id)
 
 	idStr := r.FormValue("id")
 	contactID, err := strconv.Atoi(idStr)
@@ -131,15 +115,8 @@ func (h *ContactHandler) UpdateContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ContactHandler) DeleteContact(w http.ResponseWriter, r *http.Request) {
-	type contextKey string
-
-	const (
-		contextKeyID contextKey = "ID"
-	)
-
-	id := r.Context().Value(contextKeyID).(string)
-
-	ctx := context.WithValue(r.Context(), contextKeyID, id)
+	id := uuid.New().String()
+	ctx := context.WithValue(context.Background(), "ID", id)
 
 	idStr := r.FormValue("id")
 	contactID, err := strconv.Atoi(idStr)

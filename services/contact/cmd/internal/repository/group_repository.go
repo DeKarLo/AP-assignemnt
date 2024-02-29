@@ -7,7 +7,6 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-
 type groupRepository struct {
 	conn *pgx.Conn
 }
@@ -19,7 +18,7 @@ func NewGroupRepository(conn *pgx.Conn) GroupRepository {
 }
 
 func (r *groupRepository) CreateGroup(ctx context.Context, group *domain.Group) error {
-	_, err := r.conn.Exec(ctx, "INSERT INTO groups (id, name) VALUES ($1, $2)", group.ID, group.Name)
+	_, err := r.conn.Exec(ctx, "INSERT INTO groups (name) VALUES ($1)", group.Name)
 	if err != nil {
 		return err
 	}

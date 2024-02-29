@@ -19,7 +19,7 @@ func NewContactRepository(conn *pgx.Conn) ContactRepository {
 }
 
 func (r *contactRepository) CreateContact(ctx context.Context, contact *domain.Contact) error {
-	_, err := r.conn.Exec(ctx, "INSERT INTO contacts (id, first_name, middle_name, last_name, phone_number) VALUES ($1, $2, $3, $4, $5)", contact.ID, contact.FirstName, contact.MiddleName, contact.LastName, contact.PhoneNumber)
+	_, err := r.conn.Exec(ctx, "INSERT INTO contacts (first_name, middle_name, last_name, phone_number) VALUES ($1, $2, $3, $4)", contact.FirstName, contact.MiddleName, contact.LastName, contact.PhoneNumber)
 	if err != nil {
 		return err
 	}
@@ -28,6 +28,7 @@ func (r *contactRepository) CreateContact(ctx context.Context, contact *domain.C
 
 func (r *contactRepository) GetContactByID(ctx context.Context, id int) (*domain.Contact, error) {
 	var contact domain.Contact
+
 	err := r.conn.QueryRow(ctx, "SELECT id, first_name, middle_name, last_name, phone_number FROM contacts WHERE id = $1", id).Scan(&contact.ID, &contact.FirstName, &contact.MiddleName, &contact.LastName, &contact.PhoneNumber)
 	if err != nil {
 		return nil, err
